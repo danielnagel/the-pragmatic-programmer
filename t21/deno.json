@@ -1,0 +1,8 @@
+{
+  "imports": {
+    "yaml": "npm:yaml@^2.6.1"
+  },
+  "tasks": {
+    "start": "deno run --allow-read --allow-env --allow-write yamlToJson.ts yaml"
+  }
+}
