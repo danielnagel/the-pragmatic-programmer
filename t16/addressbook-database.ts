@@ -1,6 +1,9 @@
 /**
- * In diesem Programm sollen Addressbuchdaten (Name, Telefonnummer, Addresse) in einem binären Format gespeichert werden.
- * Diese sollen anschlißend in XML und JSON übersetzt werden.
+ * In this script, address book data (name, phone number, address) is to be stored in a binary format.
+ * This data will then be translated into JSON.
+ * The extensibility of the binary format is limited;
+ * with each extension, the functions `getEntryIndices` and `getDataFromEntry` would need to be rewritten.
+ * The binary data would need to be augmented with metadata to make the format updatable.
  */
 
 const textToBinary = (text: string) => {
@@ -56,22 +59,6 @@ const binaryDataBaseToJson = (databaseBinary: string) => {
     return entryIndices.map((v, i) => getDataFromEntry(text.substring(v, i === entryIndices.length - 1 ? text.length : entryIndices[i + 1])));
 }
 
-const binaryDataBaseToXml = (databaseBinary: string) => {
-    const database = binaryDataBaseToJson(databaseBinary);
-    let xml = '<AddressBook>';
-    database.forEach(d => {
-        xml += '\n';
-        xml += '\t<Entry>\n';
-        xml += `\t\t<Name>${d.name}</Name>\n`;
-        xml += `\t\t<PhoneNumber>${d.phoneNumber}</PhoneNumber>\n`;
-        xml += `\t\t<Address>${d.address}</Address>\n`;
-        xml += '\t</Entry>';
-    })
-    xml += '\n</AddressBook>'
-    return xml;
-}
-
-
 const database: string[] = [];
 database.push(newAddressBookEntry('daniel', '018723603', 'Neue Straße 96'));
 database.push(newAddressBookEntry('kristina', '0097234069', 'Kleine Straße 77'));
@@ -84,7 +71,3 @@ console.log(binaryDataBase);
 const jsonDataBase = binaryDataBaseToJson(binaryDataBase)
 console.log('--- json ---')
 console.log(jsonDataBase);
-
-const xmlDataBase = binaryDataBaseToXml(binaryDataBase);
-console.log('--- xml ---')
-console.log(xmlDataBase);
