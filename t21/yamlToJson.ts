@@ -1,11 +1,6 @@
-/**
- * get source path from cli
- * create dir, if not existent
- * load yaml, write in json
- */
 import {parseAllDocuments} from 'yaml';
 
-const writeJson = async (path: string, json: any) => {
+const writeJson = async (path: string, json: unknown) => {
     const encoder = new TextEncoder();
     const data = encoder.encode(JSON.stringify(json, null, 2));
     await Deno.writeFile(path, data);
