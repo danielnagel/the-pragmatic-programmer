@@ -3,6 +3,7 @@
     "yaml": "npm:yaml@^2.6.1"
   },
   "tasks": {
-    "yamltojson": "deno run --allow-read --allow-env --allow-write yamlToJson.ts yaml"
+    "yamltojson": "deno run --allow-read --allow-env --allow-write yamlToJson.ts yaml",
+    "cameltosnake": "deno run --allow-read camelToSnake.ts"
   }
 }
