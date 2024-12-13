@@ -12,12 +12,13 @@ deno run yamltosjon
 
 ### issues
 
-keys as sequences aren't supported by the used yaml library, see `yaml/mixed.yaml`.
+Keys as sequences aren't supported by the used yaml library, see `yaml/mixed.yaml`.
 
 ## camelToSnake.ts
 
-lists all occurences of camelCase variables.
+Lists all occurences of camelCase variables and replaces them by their snake case equivalent.
+When used with option `--dry`, no file copies will be written. 
 
 ```bash
-deno run cameltosnake <fileName>
+deno run cameltosnake [--dry] <fileNames>
 ```
