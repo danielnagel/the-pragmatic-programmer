@@ -23,6 +23,7 @@
     const camelCaseRegex =
       /(const|let|var)\s[a-z]+((\d)|([A-Z0-9][a-z0-9]+))+([A-Z])?/g;
     const upperCaseRegex = /[A-Z]/g;
+    const matchedVariableNames: {camelCase: string, snakeCase: string}[] = [];
     console.log(`Variables of file '${fileName}':`);
     textFileContent.split("\n").forEach((line, index) => {
       let newLine = line;
@@ -52,7 +53,11 @@
           matchedCamelCaseVariableName,
           newVariableName,
         );
+        matchedVariableNames.push({camelCase: matchedCamelCaseVariableName, snakeCase: newVariableName});
       }
+      matchedVariableNames.forEach(mvn => {
+        newLine = newLine.replaceAll(mvn.camelCase, mvn.snakeCase)
+      });
       newFileContent += `${newLine}\n`;
     });
     if (index + 1 < fileNames.length) {
