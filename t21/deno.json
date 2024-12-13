@@ -4,6 +4,6 @@
   },
   "tasks": {
     "yamltojson": "deno run --allow-read --allow-env --allow-write yamlToJson.ts yaml",
-    "cameltosnake": "deno run --allow-read camelToSnake.ts"
+    "cameltosnake": "deno run --allow-read --allow-write camelToSnake.ts"
   }
 }

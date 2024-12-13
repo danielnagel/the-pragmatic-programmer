@@ -1,5 +1,11 @@
-(async () => {
-  for (const fileName of Deno.args) {
+(() => {
+  const fileNames = Deno.args;
+  let isDryRun = false;
+  if (fileNames[0] === "--dry") {
+    fileNames.shift();
+    isDryRun = true;
+  }
+  fileNames.forEach(async (fileName, index) => {
     let textFileContent = "";
     try {
       textFileContent = await Deno.readTextFile(fileName);
@@ -9,20 +15,54 @@
           `Can't open file '${fileName}'. Original message: ${e.message}`,
         );
       }
-      console.log("usage: deno run cameltosnake <fileName>");
+      console.log("usage: deno run cameltosnake [--dry] <fileName>");
     }
     if (!textFileContent) return;
-    const regex = /(const|let|var)\s[a-z]+((\d)|([A-Z0-9][a-z0-9]+))+([A-Z])?/g;
+
+    let newFileContent = "";
+    const camelCaseRegex =
+      /(const|let|var)\s[a-z]+((\d)|([A-Z0-9][a-z0-9]+))+([A-Z])?/g;
+    const upperCaseRegex = /[A-Z]/g;
     console.log(`Variables of file '${fileName}':`);
     textFileContent.split("\n").forEach((line, index) => {
-      let match = null;
-      while ((match = regex.exec(line)) != null) {
+      let newLine = line;
+      let camelCaseMatch = null;
+      while ((camelCaseMatch = camelCaseRegex.exec(line)) != null) {
+        const matchedCamelCaseVariableName =
+          line.substring(camelCaseMatch.index, camelCaseRegex.lastIndex).split(
+            " ",
+          )[1];
+        let upperCaseMatch = null;
+        let newVariableName = matchedCamelCaseVariableName;
+        while (
+          (upperCaseMatch = upperCaseRegex.exec(newVariableName)) != null
+        ) {
+          const matchedCharacter = newVariableName.charAt(upperCaseMatch.index);
+          newVariableName = newVariableName.replace(
+            matchedCharacter,
+            `_${matchedCharacter.toLowerCase()}`,
+          );
+        }
         console.log(
-          `line ${index + 1}: ${
-            line.substring(match.index, regex.lastIndex).split(" ")[1]
-          }`,
+          `line ${
+            index + 1
+          }: ${matchedCamelCaseVariableName} => ${newVariableName}`,
+        );
+        newLine = newLine.replace(
+          matchedCamelCaseVariableName,
+          newVariableName,
         );
       }
+      newFileContent += `${newLine}\n`;
     });
-  }
+    if (index + 1 < fileNames.length) {
+      console.log("-----------------");
+    }
+    if (!isDryRun) {
+      await Deno.mkdir("snakeCaseFiles", { recursive: true });
+      const encoder = new TextEncoder();
+      const data = encoder.encode(newFileContent);
+      await Deno.writeFile(`snakeCaseFiles/${fileName}`, data);
+    }
+  });
 })();
